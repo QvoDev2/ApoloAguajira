@@ -110,7 +110,6 @@ class EscoltaController extends Controller
           'usuario',
         ];
 
-
         foreach ($data as $key => $row) {
           if ($key==0) {continue;}
           $row = utf8_encode($row);
@@ -147,10 +146,16 @@ class EscoltaController extends Controller
             $zonas = [$id];
           }
           $valores[7] = $zonas;
-
-
           $valores[] = 1;
-          $request = array_combine($columnas,$valores);
+          $request = (object) array_combine($columnas,$valores);
+
+          DB::beginTransaction();
+          $escolta = Escolta::create($request);
+          $escolta->zonas()->sync($request->zonas);
+          if ($request->usuario){
+            $escolta->crearUsuario($request);
+          }
+          DB::commit();
           $return[] = $request;
         }
       }
