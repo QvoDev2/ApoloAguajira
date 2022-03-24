@@ -92,7 +92,8 @@ class ViewVariables
             $tiposEscolta = Lista::tiposEscolta()->pluck('nombre', 'id')->toArray();
             $tiposContrato = Lista::tiposContrato()->pluck('nombre', 'id')->toArray();
             $estados = Escolta::ESTADOS;
-            $zonas = auth()->user()->zonas()->pluck('nombre', 'id')->toArray();
+            $zonas = auth()->user()->id == 1 ? Lista::zonas()->pluck('nombre', 'id')->toArray() : auth()->user()->zonas()->pluck('nombre', 'id')->toArray();
+            // $zonas = auth()->user()->zonas()->pluck('nombre', 'id')->toArray();
             $empresas = Lista::empresas()->pluck('nombre', 'id')->toArray();
             $bancos = Lista::bancos()->pluck('nombre', 'id')->toArray();
             $tiposCuenta = Lista::tiposCuenta()->pluck('nombre', 'id')->toArray();

@@ -52,9 +52,12 @@
                   let this_ = $(this);
                   let files = await procesararchivos(this_);
                   let url =  `{!! route("{$perfil}.escoltas.importar") !!}`;
+                  $.blockUI()
                   await axios.post(url,files).then(resp => {
+                    $.unblockUI();
                     console.log(resp);
                   }).catch(err => {
+                    $.unblockUI()
                     console.error(err);
                   });
                 });
