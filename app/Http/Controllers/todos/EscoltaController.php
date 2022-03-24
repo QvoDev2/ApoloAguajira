@@ -135,10 +135,7 @@ class EscoltaController extends Controller
             $empresas = [$id];
           }
           $valores[13] = reset($empresas);
-
-
           $request = array_combine($columnas,$valores);
-
           $return[] = $request;
         }
       }
