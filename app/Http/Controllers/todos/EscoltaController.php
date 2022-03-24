@@ -106,7 +106,7 @@ class EscoltaController extends Controller
           'banco_id',
           'tipo_cuenta_id',
           'numero_cuenta',
-          'empresa_id'
+          'empresa_id',
           'usuario',
         ];
 
