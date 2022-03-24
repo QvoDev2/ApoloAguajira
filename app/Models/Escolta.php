@@ -132,7 +132,7 @@ class Escolta extends Model
     $this->usuario()
     ->create($request)
     ->zonas()
-    ->sync($request->zonas);
+    ->sync($request['zonas']);
   }
   public function crearUsuario($request)
   {
