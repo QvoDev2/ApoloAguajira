@@ -55,10 +55,12 @@
                   $.blockUI()
                   await axios.post(url,files).then(resp => {
                     $.unblockUI();
-                    console.log(resp);
+                    Swal.fire('Hecho','Se agregaron los escoltas a la base de datos','success');
+                    window.LaravelDataTables['EscoltasTable'].draw();
+                    console.log(resp.data);
                   }).catch(err => {
                     $.unblockUI()
-                    console.error(err);
+                    alert("ERROR:");
                   });
                 });
         input.click();
