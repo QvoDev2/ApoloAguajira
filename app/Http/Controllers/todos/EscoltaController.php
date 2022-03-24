@@ -124,7 +124,6 @@ class EscoltaController extends Controller
             }
             $valores[0] = reset($tipoescolta);
           }
-
           if (!is_numeric($valores[1])) {
             $tipocontrato = Lista::tiposContrato()->where('nombre','like',"%$valores[1]%")->pluck('id')->toArray();
             if (count($tipocontrato)==0) {
@@ -133,7 +132,6 @@ class EscoltaController extends Controller
             }
             $valores[1] = reset($tipocontrato);
           }
-
           if (!is_numeric($valores[13])) {
             $empresas = Lista::empresas()->where('nombre','like',"%$valores[13]%")->pluck('id')->toArray();
             if (count($empresas)==0) {
@@ -142,8 +140,13 @@ class EscoltaController extends Controller
             }
             $valores[13] = reset($empresas);
           }
-          $valores[] = 1;
 
+          $empresas = Lista::zonas()->where('nombre','like',"%$valores[7]%")->pluck('id')->toArray();
+
+          $valores[7] = $empresas;
+
+
+          $valores[] = 1;
           $request = array_combine($columnas,$valores);
           $return[] = $request;
         }
