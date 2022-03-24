@@ -25,7 +25,6 @@ class EscoltaController extends Controller
 
     public function store(CreateRequest $request)
     {
-      dd($request->all());
         try {
             DB::beginTransaction();
             $escolta = Escolta::create($request->all());
@@ -147,13 +146,13 @@ class EscoltaController extends Controller
           }
           $valores[7] = $zonas;
           $valores[] = 1;
-          $request = (object) array_combine($columnas,$valores);
+          $request = array_combine($columnas,$valores);
 
           DB::beginTransaction();
           $escolta = Escolta::create($request);
-          $escolta->zonas()->sync($request->zonas);
-          if ($request->usuario){
-            $escolta->crearUsuario($request);
+          $escolta->zonas()->sync($request['zonas']);
+          if ($request['usuario']){
+            $escolta->crearUsuarioImport($request);
           }
           DB::commit();
           $return[] = $request;

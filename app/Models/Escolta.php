@@ -123,6 +123,17 @@ class Escolta extends Model
     return $this->hasOne(User::class, 'escolta_id');
   }
 
+  public function crearUsuarioImport($request){
+    $request = (array) $request;
+    $request['nombres']   = $request['nombre'];
+    $request['documento'] = $request['identificacion'];
+    $request['password']  = Hash::make("{$request['documento']}1");
+    $request['perfil_id'] = Perfil::ESCOLTA;
+    $this->usuario()
+    ->create($request)
+    ->zonas()
+    ->sync($request->zonas);
+  }
   public function crearUsuario($request)
   {
     $request['nombres']   = $request['nombre'];
