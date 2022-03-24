@@ -108,6 +108,98 @@
                     $('#ventana-content').empty()
             })
 
+
+            async function procesararchivos(input,args){
+              return new Promise(async function(resolve,reject){
+                if (typeof imageCompression == 'undefined') {
+                  await $.getScript('https://cdn.jsdelivr.net/npm/browser-image-compression@1.0.13/dist/browser-image-compression.js');
+                }
+                if (typeof imageCompression !== 'function') {
+                  alerta.error("No se cargo la funcion imageCompression. Contactar al administrador");
+                  await procesararchivos(input);
+                  return;
+                }
+                let arrayImages = [];
+                if (undefined==args) {
+                  args = {}
+                }
+                if (undefined==args.force) {args.force = 0;}
+
+                let files = [];
+                if (input.constructor.name=='DataTransferItemList') {
+                  Object.values(input).forEach((item, i) => {
+                    files.push(item.getAsFile());
+                  });
+                }
+                else if (input.constructor.name=='FileList') {
+                  files = Object.values(input);
+                }
+                else{
+                  files = Object.values(input.prop('files'));
+                }
+
+
+                try {
+                  await Promise.all(Object.values(files).map(async (file) =>{
+                    let datos = {};
+                    let imagenes =['image/png','image/jpeg','image/jpg','image/svg','image/svg+xml','image/gif','image/bmp',]
+                    let filessuport =['application/pdf'];
+                    datos.name = file.name;
+                    datos.type = file.type;
+                    // if (!!args.force) {
+                    //   var reader = new FileReader();
+                    //   reader.readAsDataURL(file);
+                    //   reader.onloadend = function(){
+                    //     datos.size = file.size;
+                    //     datos.file = reader.result.replace(`data:${file.type};base64,`,'');
+                    //     arrayImages.push(datos);
+                    //   }
+                    //   return;
+                    // }
+                    if (imagenes.includes(file.type)) {
+                      var compressedFile = await imageCompression(file, {maxSizeMB: 1,maxWidthOrHeight: 1200,useWebWorker: true});
+                      var base = await imageCompression.getDataUrlFromFile(compressedFile);
+                      datos.size = compressedFile.size;
+                      datos.file = base.replace(`data:${file.type};base64,`,'');
+                      arrayImages.push(datos);
+                    }
+                    else if(filessuport.includes(file.type)){
+                      var reader = new FileReader();
+                      reader.readAsDataURL(file);
+                      reader.onloadend = function(){
+                        datos.size = file.size;
+                        datos.file = reader.result.replace(`data:${file.type};base64,`,'');
+                        arrayImages.push(datos);
+                      }
+                    }
+                    else{
+                      if (file.size > 31457280) {
+                        console.error(`El archivo ${file.name} Excede el tamaÃ±o de subido. se omite en el array`);
+                        alerta.ok({
+                          text:`El archivo ${file.name} Excede el tamaÃ±o de subido. se omite en el array`,
+                          timeout:600,
+                          status:'danger'
+                        });
+                        return;
+                      }
+                      var reader = new FileReader();
+                      reader.readAsDataURL(file);
+                      reader.onloadend = function(){
+                        datos.size = file.size;
+                        datos.file = reader.result.replace(`data:${file.type};base64,`,'');
+                        arrayImages.push(datos);
+                      }
+                    }
+                  }));
+                } catch (e) {
+                  reject(e);
+                }
+                setTimeout(function(){resolve(arrayImages);},800);
+              });
+            }
+
+
+
             function mostrarErroresAjax(res)
             {
                 var html = ''
@@ -140,11 +232,9 @@
             function soloNumeros(valor, decimal = false) {
                 var out = ''
                 var filtro = decimal ? '0123456789.' :'0123456789'
-
                 for (var i=0; i < valor.length; i++)
                     if (filtro.indexOf(valor.charAt(i)) != -1)
                         out += valor.charAt(i)
-
                 return out;
             }
         </script>

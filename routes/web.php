@@ -78,8 +78,8 @@ Route::group(['middleware' => ['auth', 'estado', 'variables']], function () {
                 Route::post('reportes/aprobar/{reporte}', 'ReporteController@aprobar')->name('reportes.aprobar');
                 Route::post('reportes/rechazar/{reporte}', 'ReporteController@rechazar')->name('reportes.rechazar');
             });
-
             //* ESCOLTAS
+            Route::match(['patch','post'],'escoltas/importar','EscoltaController@importar')->name('escoltas.importar');
             Route::resource('escoltas', 'EscoltaController')->except(['show']);
 
             //* CLIENTES
@@ -173,14 +173,15 @@ Route::group(['middleware' => ['auth', 'estado', 'variables']], function () {
                 Route::post('esquema-seguridad/{clienteId}', 'EsquemaController@update')->name('esquema.update');
             });
 
-            //* PAGOS
-            Route::get('pagos/{comision}', 'PagoController@index')->name('pagos.index');
-            Route::get('pagos/create/{comision}', '@create')->name('pagos.create');
-            Route::post('pagos/{comisionId}', 'PagoContrPagoControlleroller@store')->name('pagos.store');
-            Route::get('pagos/{comisionId}/edit', 'PagoController@edit')->name('pagos.edit');
-            Route::patch('pago/{pagoId}', 'PagoController@update')->name('pagos.update');
-            Route::delete('pagos/{pagoId}', 'PagoController@destroy')->name('pagos.destroy');
-            Route::get('pagos/download-file/{pagoId}', 'PagoController@downloadFile')->name('pagos.downloadFile');
+            // //* PAGOS
+            // Route::get('pagos/{comision}', 'PagoController@index')->name('pagos.index');
+            // Route::get('pagos/create/{comision}', '@create')->name('pagos.create');
+            // Route::post('pagos/{comisionId}', 'PagoContrPagoControlleroller@store')->name('pagos.store');
+            // Route::get('pagos/{comisionId}/edit', 'PagoController@edit')->name('pagos.edit');
+            // Route::patch('pago/{pagoId}', 'PagoController@update')->name('pagos.update');
+            // Route::delete('pagos/{pagoId}', 'PagoController@destroy')->name('pagos.destroy');
+            // Route::get('pagos/download-file/{pagoId}', 'PagoController@downloadFile')->name('pagos.downloadFile');
+
         });
 
         //! RUTAS UNIÓN TEMPORAL

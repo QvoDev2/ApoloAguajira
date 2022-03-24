@@ -157,6 +157,12 @@ class ViewVariables
             $view->with(compact('perfil'));
         });
     }
+    public function escolta(){
+        View::composer(['*'], function ($view) {
+          $perfil = 'escolta';
+          $view->with(compact('perfil'));
+        });
+    }
 
     public function union_temporal()
     {

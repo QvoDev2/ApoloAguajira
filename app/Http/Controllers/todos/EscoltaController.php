@@ -7,10 +7,12 @@ use App\Http\Controllers\todos\Controller;
 use App\Http\Requests\todos\escoltas\CreateRequest;
 use App\Http\Requests\todos\escoltas\UpdateRequest;
 use App\Models\Escolta;
+use App\Models\Lista;
 use Illuminate\Support\Facades\DB;
 
 class EscoltaController extends Controller
 {
+
     public function index(EscoltaDataTable $tabla)
     {
         return $tabla->render('todos.escoltas.index');
@@ -23,6 +25,7 @@ class EscoltaController extends Controller
 
     public function store(CreateRequest $request)
     {
+      dd($request->all());
         try {
             DB::beginTransaction();
             $escolta = Escolta::create($request->all());
@@ -83,5 +86,59 @@ class EscoltaController extends Controller
         } catch (\Throwable $th) {
             return $this->responseError($th->getMessage());
         }
+    }
+
+    public function importar(){
+      $return = [];
+      foreach (request()->all() as $key => $value) {
+        $data = str_getcsv(base64_decode($value['file']), "\n");
+        foreach ($data as $key => $row) {
+          if ($key==0) {continue;}
+          $row = utf8_encode($row);
+          $valores = array_map(function($a){return trim($a);},explode(';',$row));
+
+          // $tipoescolta = Lista::tiposEscolta()->where('nombre','like',"%$valores[0]%")->pluck('id')->toArray();
+          // if (count($tipoescolta)==0) {
+          //   $id = Lista::create(['nombre'=>"Escolta $valores[0]",'tipo_lista_id' => 1])->id;
+          //   $tipoescolta = [$id];
+          // }
+          // $valores[0] = reset($tipoescolta);
+          // $tipocontrato = Lista::tiposContrato()->where('nombre','like',"%$valores[1]%")->pluck('id')->toArray();
+          // if (count($tipocontrato)==0) {
+          //   $id = Lista::create(['nombre'=>$valores[1],'tipo_lista_id' => 2])->id;
+          //   $tipocontrato = [$id];
+          // }
+          // $valores[1] = reset($tipocontrato);
+
+          $empresas = Lista::empresas()->where('nombre','like',"%$valores[13]%")->pluck('id')->toArray();
+          if (count($empresas)==0) {
+            $id = Lista::create(['nombre'=>$valores[13],'tipo_lista_id' => 10])->id;
+            $empresas = [$id];
+          }
+          $valores[13] = reset($empresas);
+
+
+          $columnas = [
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            'empresa_id'
+          ];
+
+
+          $return[] = $valores;
+        }
+      }
+      return  $return;
     }
 }

@@ -2,7 +2,14 @@
 
 @section('title')
     Escoltas
-    <a type="button" class="btn btn-primary float-right" href="{{route("{$perfil}.escoltas.create")}}">Nuevo</a>
+
+
+    <div class="btn-group float-right" role="group" aria-label="Basic example">
+      <a type="button" class="btn btn-primary" href="{{route("{$perfil}.escoltas.create")}}">Nuevo</a>
+      <button type="button" btn-importar class="btn btn-success">Importar</button>
+    </div>
+
+
 @endsection
 
 @section('content')
@@ -35,6 +42,25 @@
 
 @push('scripts')
     <script type="text/javascript">
+
+      $("[btn-importar]").click(function(){
+        let this_ = $(this);
+        let input = $('<input/>')
+                .attr('type', "file")
+                .attr('name', "file")
+                .on('change',async function(){
+                  let this_ = $(this);
+                  let files = await procesararchivos(this_);
+                  let url =  `{!! route("{$perfil}.escoltas.importar") !!}`;
+                  await axios.post(url,files).then(resp => {
+                    console.log(resp);
+                  }).catch(err => {
+                    console.error(err);
+                  });
+                });
+        input.click();
+      });
+
         confirmarRestablecerContrasena = (id) => {
             Swal.fire({
                 title: '¿Restablecer contraseña?',
@@ -52,7 +78,6 @@
                 }
             })
         }
-
         restablecerContrasena = (id) => {
             $.ajax({
                 type: "POST",
