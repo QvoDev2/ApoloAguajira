@@ -142,6 +142,7 @@ class EscoltaController extends Controller
           $zonas = Lista::zonas()->where('nombre','like',"%$valores[7]%")->pluck('id')->toArray();
           if (count($zonas)==0) {
             $id = Lista::create(['nombre'=>"Zona $valores[7]",'tipo_lista_id' => 7])->id;
+            Lista::zonas()->insert(['usuario_id' => auth()->user()->id,'zona_id' => $id]);
             $zonas = [$id];
           }
           $valores[7] = $zonas;
