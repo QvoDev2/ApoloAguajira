@@ -103,11 +103,11 @@ class EscoltaController extends Controller
           'zonas', //array
           'celular',
           'estado',
-          'usuario',
           'banco_id',
           'tipo_cuenta_id',
           'numero_cuenta',
           'empresa_id'
+          'usuario',
         ];
 
 
@@ -116,28 +116,36 @@ class EscoltaController extends Controller
           $row = utf8_encode($row);
           $valores = array_map(function($a){return trim($a);},explode(';',$row));
 
-          $tipoescolta = Lista::tiposEscolta()->where('nombre','like',"%$valores[0]%")->pluck('id')->toArray();
-          if (count($tipoescolta)==0) {
-            $id = Lista::create(['nombre'=>"Escolta $valores[0]",'tipo_lista_id' => 1])->id;
-            $tipoescolta = [$id];
+          if (!is_numeric($valores[0])) {
+            $tipoescolta = Lista::tiposEscolta()->where('nombre','like',"%$valores[0]%")->pluck('id')->toArray();
+            if (count($tipoescolta)==0) {
+              $id = Lista::create(['nombre'=>"Escolta $valores[0]",'tipo_lista_id' => 1])->id;
+              $tipoescolta = [$id];
+            }
+            $valores[0] = reset($tipoescolta);
           }
-          $valores[0] = reset($tipoescolta);
-          $tipocontrato = Lista::tiposContrato()->where('nombre','like',"%$valores[1]%")->pluck('id')->toArray();
-          if (count($tipocontrato)==0) {
-            $id = Lista::create(['nombre'=>$valores[1],'tipo_lista_id' => 2])->id;
-            $tipocontrato = [$id];
-          }
-          $valores[1] = reset($tipocontrato);
 
-          $empresas = Lista::empresas()->where('nombre','like',"%$valores[13]%")->pluck('id')->toArray();
-          if (count($empresas)==0) {
-            $id = Lista::create(['nombre'=>$valores[13],'tipo_lista_id' => 10])->id;
-            $empresas = [$id];
+          if (!is_numeric($valores[1])) {
+            $tipocontrato = Lista::tiposContrato()->where('nombre','like',"%$valores[1]%")->pluck('id')->toArray();
+            if (count($tipocontrato)==0) {
+              $id = Lista::create(['nombre'=>$valores[1],'tipo_lista_id' => 2])->id;
+              $tipocontrato = [$id];
+            }
+            $valores[1] = reset($tipocontrato);
           }
-          $valores[13] = reset($empresas);
+
+          if (!is_numeric($valores[13])) {
+            $empresas = Lista::empresas()->where('nombre','like',"%$valores[13]%")->pluck('id')->toArray();
+            if (count($empresas)==0) {
+              $id = Lista::create(['nombre'=>$valores[13],'tipo_lista_id' => 10])->id;
+              $empresas = [$id];
+            }
+            $valores[13] = reset($empresas);
+          }
+          $valores[] = 1;
+
           $request = array_combine($columnas,$valores);
           $return[] = $request;
-          
         }
       }
       return  $return;
