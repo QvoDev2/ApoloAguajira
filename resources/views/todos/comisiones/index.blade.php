@@ -491,10 +491,7 @@
         }
 
         const verPagos = (id) => {
-            cargarModal(
-                '{{ route("{$perfil}.pagos.index", ':id') }}'.replace(':id', id),
-                'xl'
-            )
+
         }
 
         const cargarInstructivoImportar = () => {
