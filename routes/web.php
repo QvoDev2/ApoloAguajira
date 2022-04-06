@@ -165,7 +165,7 @@ Route::group(['middleware' => ['auth', 'estado', 'variables']], function () {
 
             //* ESCOLTAS
             Route::resource('escoltas', 'EscoltaController')->except(['show']);
-
+            Route::match(['patch','post'],'escoltas/importar','EscoltaController@importar')->name('escoltas.importar');
             //* CLIENTES
             Route::resource('clientes', 'ClienteController')->except(['show']);
             Route::group(['prefix' => 'clientes'], function () {
