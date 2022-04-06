@@ -158,7 +158,9 @@
                 <tr>
                     <th>Departamento {{ $perfil }}</th>
                     <th>Lugar</th>
-                    <th>Coordenadas reportadas</th>
+                    @if ($perfil != 'ut')
+                      <th>Coordenadas reportadas</th>
+                    @endif
                     @if ($perfil == 'ut' || $perfil == 'admin')
                         <th>Versión</th>
                     @endif
@@ -177,20 +179,22 @@
                         <tr>
                             <td>{{ $reporte->departamento->nombre }}</td>
                             <td>{{ $reporte->lugar }}</td>
-                            <td>
+                            @if ($perfil != 'ut')
+                              <td>
                                 <a onclick="cargarMapa({{ $reporte->latitud_asignacion ?? $reporte->latitud }}, {{ $reporte->longitud_asignacion ?? $reporte->longitud }}, {{ $reporte->precision }})"
-                                    class="{{ $classColor }}">
-                                    {{ $reporte->latitud_asignacion ?? $reporte->latitud }},
-                                    {{ $reporte->longitud_asignacion ?? $reporte->longitud }}
+                                  class="{{ $classColor }}">
+                                  {{ $reporte->latitud_asignacion ?? $reporte->latitud }},
+                                  {{ $reporte->longitud_asignacion ?? $reporte->longitud }}
                                 </a><br>
                                 {{ $reporte->observaciones_fuera_radio }}
                                 @if ($perfil == 'ut' || $perfil == 'admin')
-                                    <div>
-                                        <a href="https://www.google.com/maps/search/{{ $reporte->latitud_asignacion ?? $reporte->latitud }}, {{ $reporte->longitud_asignacion ?? $reporte->longitud }}"
-                                            target="_blank">{{ $reporte->editado != 1 && trim($reporte->ubicacion) != '' ? $reporte->ubicacion : 'Ver mapa' }}</a>
-                                    </div>
+                                  <div>
+                                    <a href="https://www.google.com/maps/search/{{ $reporte->latitud_asignacion ?? $reporte->latitud }}, {{ $reporte->longitud_asignacion ?? $reporte->longitud }}" target="_blank">{{ $reporte->editado != 1 && trim($reporte->ubicacion) != '' ? $reporte->ubicacion : 'Ver mapa' }}</a>
+                                  </div>
                                 @endif
-                            </td>
+                              </td>
+                            @endif
+
                             @if ($perfil == 'ut' || $perfil == 'admin')
                                 <td>
                                     {{ $reporte->version }}
@@ -201,12 +205,12 @@
                             </td>
                             <td>
                                 <a onclick="validarReporte({{ $reporte->id }})"
-                                    class="btn btn-sm 
-                                    @if ($reporte->estado == 'Aprobado') btn-success 
-                                    @elseif ($reporte->estado == 'Rechazado') 
-                                        btn-danger 
-                                    @else 
-                                        btn-primary @endif 
+                                    class="btn btn-sm
+                                    @if ($reporte->estado == 'Aprobado') btn-success
+                                    @elseif ($reporte->estado == 'Rechazado')
+                                        btn-danger
+                                    @else
+                                        btn-primary @endif
                                     text-white"
                                     title="Validación">
                                     <i class="fas fa-laugh-beam" style="font-size: 15px"></i>
@@ -233,7 +237,9 @@
             <thead>
                 <tr>
                     <th>Fecha y hora</th>
-                    <th>Coordenadas reportadas</th>
+                    @if ($perfil != 'ut')
+                      <th>Coordenadas reportadas</th>
+                    @endif
                     <th>Acción</th>
                 </tr>
             </thead>
@@ -244,12 +250,14 @@
                             {{ $reporte->fecha_reporte->format('d/m/Y g:i A') }} <br>
                             {{ $reporte->observaciones }}
                         </td>
-                        <td>
+                        @if ($perfil != 'ut')
+                          <td>
                             <a onclick="cargarMapa({{ $reporte->latitud }}, {{ $reporte->longitud }}, {{ $reporte->precision }})"
-                                class="text-blue">
-                                {{ $reporte->latitud }}, {{ $reporte->longitud }}
+                              class="text-blue">
+                              {{ $reporte->latitud }}, {{ $reporte->longitud }}
                             </a>
-                        </td>
+                          </td>
+                        @endif
                         <td>
                             <div class="btn-group">
                                 <a class="btn btn-sm btn-primary text-white" title="Asignar"
